@@ -7,7 +7,7 @@ from numpy.linalg import norm
 def distance(feat1, feat2):
     feat1 = feat1.ravel()
     feat2 = feat2.ravel()
-    return np.dot(feat1, feat2) / (norm(feat1) * norm(feat2))
+    return abs(np.dot(feat1, feat2) / (norm(feat1) * norm(feat2)))
 
 
 def main():
@@ -25,8 +25,10 @@ def main():
     [person4] = app.get(img4)
 
     people = [("Ross 1", person1), ("Ross 2", person2), ("Chandler 1", person3), ("Chandler 2", person4)]
-    for i in range(len(people)-1):
-        print(f"{people[i][0]} vs {people[i+1][0]}: {distance(people[i][1]['embedding'], people[i+1][1]['embedding'])}")
+    for i in range(len(people) - 1):
+        for j in range(i + 1, len(people)):
+            dist = distance(people[i][1]['embedding'], people[j][1]['embedding'])
+            print(f"{people[i][0]} vs {people[j][0]}: {'Different' if dist < 0.1 else 'Same'}. Distance: {dist}")
 
 
 if __name__ == '__main__':
